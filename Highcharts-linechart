@@ -1,0 +1,91 @@
+
+<html>
+    <head>
+        <title>Number of People Per Year</title>
+    </head>
+    <body>
+        <h1>Number of People Per Year</h1>
+        <div id="chartPlaceHolder"></div>
+
+        <!-- External imports begin -->
+        <script src = "https://code.highcharts.com/highcharts.js"></script>
+        <!-- External imports end -->
+
+        <!-- Internal imports begin -->
+        <script src= "lines.js"></script>
+        <!-- Internal imports end -->
+    </body>
+</html>
+
+
+ var series = [
+    {
+        name: 'Fulltime Men Applied',
+        data:[45636, 41583, 39779, 37009, 34618, 31992, 28758, 25097, 22332, 21725, 21590, 20566, 19838, 18147],
+    },
+    {
+        name: 'Fulltime Women Applied',
+        data:[52265, 46845, 44430, 41047, 38822, 35408, 32049, 28351, 25761, 25321, 25775, 24507, 23748, 22371],
+    },
+    {
+        name: 'Fulltime Men Admitted',
+        data:[13781, 13981, 14103, 12748, 11758, 11866, 10917, 8707, 8365, 7816, 8517, 8419, 9210, 7580],
+    },
+    {
+        name: 'Fulltime Women Admitted',
+        data:[15821, 16231, 16170, 13761, 12837, 12966, 12046, 10269, 9991, 9863, 11200, 10759, 12135, 10311],
+    },
+    {
+        name: 'Fulltime Men Enrolled',
+        data:[3220, 2725, 2669, 2711, 2538, 2616, 2328, 1583, 1858, 1695, 1893, 1838, 2031, 1607],
+    },
+    {
+        name: 'Fulltime Women Enrolled',
+        data:[3484, 2974, 3077,  2581, 2383, 2612, 2245, 1861, 2089, 2054, 2399, 2303, 2558, 2113],
+    }
+ ];
+
+ var title = {
+    text: 'Fulltime Number of People Per Year'
+ };
+
+ var subtitle = {
+    text: 'Source: DSC106'
+ };
+
+ var xAxis = {
+    categories: ['2018', '2017', '2016', '2015', '2014', '2013', '2012', '2011', '2010', '2009', '2008', '2007', '2006', '2005']
+ };
+
+ var yAxis = {
+    title: {
+        text: 'Number of People'
+    },
+    plotlines: [{
+        value: 0,
+        width: 1,
+        color: '#808080'
+    }]
+ };
+
+ var toottip = {
+    valueSuffix: '\xB0C'
+ };
+ var legend = {
+    layout: 'vertical',
+    align: 'right',
+    verticalAlign: 'middle',
+    borderwidth: 0
+ };
+ var json = {};
+
+json.title = title;
+json.subtitle = subtitle;
+json.xAxis = xAxis;
+json.yAxis = yAxis;
+json.tooltip = tooltip;
+json.legend = legend;
+json.series = series;
+
+var someVar = document.getElementById("chartPlaceHolder");
+Highcharts.chart(someVar, json);
