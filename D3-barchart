@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<style>
+  .axis .domain {
+    display: none;
+  }
+</style>
+<h1>Number of People Per Year</h1>
+<svg width="960" height="500"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+  var svg = d3.select("svg"),
+    margin = {
+      top: 20,
+      right: 20,
+      bottom: 30,
+      left: 40
+    },
+    width = +svg.attr("width") - margin.left - margin.right,
+    height = +svg.attr("height") - margin.top - margin.bottom,
+    g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleBand()
+    .rangeRound([0, width])
+    .paddingInner(0.05)
+    .align(0.1);
+
+  var y = d3.scaleLinear()
+    .rangeRound([height, 0]);
+
+  var z = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+  var data = [{
+    "year": 2018,
+    "fulltime_men_applied": 45636,
+    "fulltime_women_applied": 52265,
+    "fulltime_men_admitted": 13781,
+    "fulltime_women_admitted": 15821,
+    "fulltime_men_enrolled": 3220,
+    "fulltime_women_enrolled": 3484
+  },
+  {
+    "year": 2017,
+    "fulltime_men_applied": 41583,
+    "fulltime_women_applied": 46845,
+    "fulltime_men_admitted": 13981,
+    "fulltime_women_admitted": 16231,
+    "fulltime_men_enrolled": 2725,
+    "fulltime_women_enrolled": 2974
+  },
+  {
+    "year": 2016,
+    "fulltime_men_applied": 39779,
+    "fulltime_women_applied": 44430,
+    "fulltime_men_admitted": 14103,
+    "fulltime_women_admitted": 16170,
+    "fulltime_men_enrolled": 2669,
+    "fulltime_women_enrolled": 3077
+  },
+  {
+    "year": 2015,
+    "fulltime_men_applied": 37009,
+    "fulltime_women_applied": 41047,
+    "fulltime_men_admitted": 12748,
+    "fulltime_women_admitted": 13761,
+    "fulltime_men_enrolled": 2711,
+    "fulltime_women_enrolled": 2581
+  },
+  {
+    "year": 2014,
+    "fulltime_men_applied": 34618,
+    "fulltime_women_applied": 38822,
+    "fulltime_men_admitted": 11758,
+    "fulltime_women_admitted": 12837,
+    "fulltime_men_enrolled": 2538,
+    "fulltime_women_enrolled": 2383
+  },
+  {
+    "year": 2013,
+    "fulltime_men_applied": 31992,
+    "fulltime_women_applied": 35408,
+    "fulltime_men_admitted": 11866,
+    "fulltime_women_admitted": 12966,
+    "fulltime_men_enrolled": 2616,
+    "fulltime_women_enrolled": 2612
+  },
+  {
+    "year": 2012,
+    "fulltime_men_applied": 28758,
+    "fulltime_women_applied": 32049,
+    "fulltime_men_admitted": 10917,
+    "fulltime_women_admitted": 12046,
+    "fulltime_men_enrolled": 2328,
+    "fulltime_women_enrolled": 2245
+  },
+  {
+    "year": 2011,
+    "fulltime_men_applied": 25097,
+    "fulltime_women_applied": 28351,
+    "fulltime_men_admitted": 8707,
+    "fulltime_women_admitted": 10269,
+    "fulltime_men_enrolled": 1583,
+    "fulltime_women_enrolled": 1861
+  },
+  {
+    "year": 2010,
+    "fulltime_men_applied": 22332,
+    "fulltime_women_applied": 25761,
+    "fulltime_men_admitted": 8365,
+    "fulltime_women_admitted": 9991,
+    "fulltime_men_enrolled": 1858,
+    "fulltime_women_enrolled": 2089
+  },
+  {
+    "year": 2009,
+    "fulltime_men_applied": 21725,
+    "fulltime_women_applied": 25321,
+    "fulltime_men_admitted": 7816,
+    "fulltime_women_admitted": 9863,
+    "fulltime_men_enrolled": 1695,
+    "fulltime_women_enrolled": 2054
+  },
+  {
+    "year": 2008,
+    "fulltime_men_applied": 21590,
+    "fulltime_women_applied": 25775,
+    "fulltime_men_admitted": 8517,
+    "fulltime_women_admitted": 11200,
+    "fulltime_men_enrolled": 1893,
+    "fulltime_women_enrolled": 2399
+  },
+  {
+    "year": 2007,
+    "fulltime_men_applied": 20566,
+    "fulltime_women_applied": 24507,
+    "fulltime_men_admitted": 8419,
+    "fulltime_women_admitted": 10759,
+    "fulltime_men_enrolled": 1838,
+    "fulltime_women_enrolled": 2303
+  },
+  {
+    "year": 2006,
+    "fulltime_men_applied": 19838,
+    "fulltime_women_applied": 23748,
+    "fulltime_men_admitted": 9210,
+    "fulltime_women_admitted": 12135,
+    "fulltime_men_enrolled": 2031,
+    "fulltime_women_enrolled": 2558
+  },
+  {
+    "year": 2005,
+    "fulltime_men_applied": 18147,
+    "fulltime_women_applied": 22371,
+    "fulltime_men_admitted": 7580,
+    "fulltime_women_admitted": 10311,
+    "fulltime_men_enrolled": 1607,
+    "fulltime_women_enrolled": 2113
+  }];
+
+  // fix pre-processing
+  var keys = [];
+  for (key in data[0]){
+    if (key != "year")
+      keys.push(key);
+  }
+  data.forEach(function(d){
+    d.total = 0;
+    keys.forEach(function(k){
+      d.total += d[k];
+    })
+  });
+
+  data.sort(function(a, b) {
+    return b.total - a.total;
+  });
+  x.domain(data.map(function(d) {
+    return d.year;
+  }));
+  y.domain([0, d3.max(data, function(d) {
+    return d.total;
+  })]).nice();
+  z.domain(keys);
+
+  g.append("g")
+    .selectAll("g")
+    .data(d3.stack().keys(keys)(data))
+    .enter().append("g")
+    .attr("fill", function(d) {
+      return z(d.key);
+    })
+    .selectAll("rect")
+    .data(function(d) {
+      return d;
+    })
+    .enter().append("rect")
+    .attr("x", function(d) {
+      return x(d.data.year);
+    })
+    .attr("y", function(d) {
+      return y(d[1]);
+    })
+    .attr("height", function(d) {
+      return y(d[0]) - y(d[1]);
+    })
+    .attr("width", x.bandwidth());
+
+  g.append("g")
+    .attr("class", "axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  g.append("g")
+    .attr("class", "axis")
+    .call(d3.axisLeft(y).ticks(null, "s"))
+    .append("text")
+    .attr("x", 2)
+    .attr("y", y(y.ticks().pop()) + 0.5)
+    .attr("dy", "0.32em")
+    .attr("fill", "#000")
+    .attr("font-weight", "bold")
+    .attr("text-anchor", "start")
+    .text("Population");
+
+  var legend = g.append("g")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .attr("text-anchor", "end")
+    .selectAll("g")
+    .data(keys.slice().reverse())
+    .enter().append("g")
+    .attr("transform", function(d, i) {
+      return "translate(0," + i * 20 + ")";
+    });
+
+  legend.append("rect")
+    .attr("x", width - 19)
+    .attr("width", 19)
+    .attr("height", 19)
+    .attr("fill", z);
+
+  legend.append("text")
+    .attr("x", width - 24)
+    .attr("y", 9.5)
+    .attr("dy", "0.32em")
+    .text(function(d) {
+      return d;
+    });
+</script>
